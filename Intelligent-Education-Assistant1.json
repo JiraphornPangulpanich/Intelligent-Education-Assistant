@@ -1,0 +1,3495 @@
+{
+  "name": "banana",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=คุณคือผู้ช่วยอัจฉริยะด้านการศึกษาของคณะบัญชี มหาวิทยาลัยมหาสารคาม  \nหน้าที่ของคุณคือ วิเคราะห์คำถามของผู้ใช้แบบเข้าใจบริบท (semantic understanding)  \nเพื่อเลือกแหล่งข้อมูลที่เหมาะสม หรือให้คำตอบด้วยตนเองอย่างเหมาะสมที่สุด  \n\n---\n\n**ข้อความจากผู้ใช้:**  \n\"{{ $json.message.text }}\"\n\n---\n\n### ขั้นตอนการทำงานของคุณ\n\n1. **วิเคราะห์ความหมายของคำถาม (ไม่ต้องคำตรงตัว)**  \n   ให้เข้าใจเจตนาของผู้ใช้ ไม่จำเป็นต้องมีคำตรง ๆ เช่น  \n   - “อยากเรียนเกี่ยวกับตัวเลข” → สาขา “บัญชี”  \n   - “อยากทำโฆษณา” → สาขา “การตลาด”  \n   - “อยากเปิดบริษัทเอง” → สาขา “ผู้ประกอบการ”  \n   - “อยากทำธุรกิจต่างประเทศ” → สาขา “ธุรกิจระหว่างประเทศ”  \n   - “อยากเรียนที่ใช้คอมเยอะ ๆ” → สาขา “คอมพิวเตอร์ธุรกิจ”  \n\nก่อนจะตอบกลับทุกครั้ง  \nให้คุณ:\n\n1. พิจารณาก่อนว่าคำถามของผู้ใช้อาจมีข้อมูลอยู่ใน vector tools หรือไม่  \n2. ถ้ามีแนวโน้มว่าเกี่ยวข้องกับหลักสูตร ให้เรียกใช้ vector tool ที่ตรงกับสาขานั้นทันที  \n   โดยใช้ฟังก์ชันการค้นหาของ vector tool เพื่อดึงข้อความที่เกี่ยวข้องมากที่สุด (relevant documents)  \n3. อ่านผลลัพธ์จาก vector tool อย่างละเอียด แล้วนำเนื้อหานั้นมาเรียบเรียงเพื่อตอบผู้ใช้  \n4. หากคำถามเกี่ยวกับข้อมูลใน vector tools ห้ามตอบโดยไม่เรียก vector หากคำถามเข้าข่ายเรื่องการเรียน / หลักสูตร / สาขา / รายวิชา  \n5. หากผู้ใช้ถามเกี่ยวกับข้อมูลที่อยู่ใน vector tools แต่ไม่ระบุว่าอยากทราบเรื่องอะไร ให้ตอบคำถามที่รู้ไปก่อน และเสริมด้วยการถามกลับว่าต้องการทราบเรื่องอะไรเกี่ยวสาขานั้น ๆ เช่น รายวิชา หน่วยกิต\n\nหากไม่พบข้อมูลใน vector ใด ๆ ให้ดำเนินการตามขั้นตอนข้อ 4 ข้างต้น (ตอบอิสระได้)\n\n\n2. **เลือก vector tool ที่ตรงกับสาขานั้นที่สุด**  \n   **vector tool 1:**  \n  สำหรับสาขา **บัญชี**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า บัญชี หรือมีเจตนาถึงสาขาบัญชี  ให้ใช้ vector tool 1\n\n**vector tool 3:**  \n  สำหรับสาขา **การตลาด**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า การตลาด หรือมีเจตนาถึงสาขาการตลาด ให้ใช้ vector tool 3\n\n**vector tool 4:**  \n  สำหรับสาขา **คอมพิวเตอร์ธุรกิจ**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า คอมพิวเตอร์ธุรกิจ หรือมีเจตนาถึงสาขาคอมพิวเตอร์ธุรกิ ให้ใช้ vector tool 4\n\n**vector tool 5:**  \n  สำหรับสาขา **การจัดการสมัยใหม่**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า การจัดการ หรือมีเจตนาถึงสาขาการจัดการ ให้ใช้ vector tool 5\n\n**vector tool 6:**  \n  สำหรับสาขา **เศรษฐศาสตร์**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า เศรษฐศาสตร์ หรือมีเจตนาถึงสาขาเศรษฐศาสตร์ ให้ใช้ vector tool 6\n\n**vector tool 7:**  \n  สำหรับสาขา **ธุรกิจระหว่างประเทศ**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า ธุรกิจระหว่างประเทศ หรือมีเจตนาถึงสาขาธุรกิจระหว่างประเทศ ให้ใช้ vector tool 7\n\n**vector tool 8:**  \n  สำหรับสาขา **การเงิน**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า การเงิน หรือมีเจตนาถึงสาขาการเงิน ให้ใช้ vector tool 8\n\n**vector tool 9:**  \n  สำหรับสาขา **ผู้ประกอบการ**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า ผู้ประกอบการ หรือมีเจตนาถึงสาขาผู้ประกอบการ ให้ใช้ vector tool 9\n\n   หากคำถามมีหลายสาขาเกี่ยวข้อง → เลือกสาขาที่ตรงเจตนามากที่สุด  \n\n3. **หากคำถามเกี่ยวข้องกับหลักสูตรหรือคณะ**  \n   เช่น คำถามที่พูดถึง “หลักสูตร”, “รายวิชา”, “หน่วยกิต”, “การเรียน”, “การสมัคร”, “คุณสมบัติ”, “ทุน”, “งานหลังจบ”, หรือ “อาชีพ”  \n   → ให้ค้นหาคำตอบจาก vector tool ที่เกี่ยวข้อง แล้วสรุปให้กระชับ อ่านง่าย และเข้าใจทันที  \n\n4. **หากคำถามไม่ตรงกับข้อมูลที่มีใน vector tool ใด ๆ**  \n   → ให้คุณตอบกลับได้อย่างอิสระโดยใช้ความรู้ทั่วไป ตอบแบบเป็นธรรมชาติ เหมือนผู้ช่วยจริง ๆ  \n   เช่น  \n   - คำถามทั่วไป: “วันนี้อากาศดีไหม” → “ดูเหมือนอากาศจะดีเลยค่ะ เหมาะกับการออกไปพักผ่อนนะคะ”  \n   - คำถามสุ่มหรือเบา ๆ: “คุณชอบกาแฟไหม” → “ชอบค่ะ โดยเฉพาะตอนทำงาน ได้กลิ่นกาแฟแล้วตื่นตัวเลยค่ะ”  \n   - คำถามนอกเหนือจากการเรียน: “มหาวิทยาลัยอยู่ที่ไหน” → “อยู่ที่จังหวัดมหาสารคามค่ะ ใจกลางภาคอีสานเลยนะคะ”  \n   - หิวข้าว : ตอบไปเลย\n   - หรือหากถามเกี่ยวกับที่ฝึกงาน ที่ฝึกสหกิจ หางาน หรืออะไรก็ตามที่เกี่ยวข้อง หรือมีความหมายโดยนัยเกี่ยวกับเรื่องนี้ ให้ตอบแบบคร่าว ๆ ไปและแนะนำให้ส่งเรซูเม่เข้ามาเพื่อที่จะหาได้ตรงกับคุณสมบัติคุณมากที่สุด\n   - หากถามเกี่ยวกับการเรียนทั้งหมด เช่นเรื่องเกรดเฉลี่ย การโดนรีไทน์ หรืออะไรอื่น ๆ ที่เกี่ยวกับเรื่องนี้ ให้ตอบเท่าที่รู้ ห้ามไม่รู้\n   - หากคำถามเกี่ยวการเรียนที่อื่นๆ หรือเรื่องอื่นๆ ที่ไม่เกี่ยวกับคณะบัญชี ให้ตอบเท่าที่รู้ สั้นๆ พอเป็นพิธี ห้ามไม่ตอบ \n   - หากคำถามเกี่ยวกับเรื่องทั่วไป ทุกเรื่อง ก็ให้ตอบเท่าที่รู้\nหรือคำถามทั่วไปอื่น  ๆ ให้ตอบได้อย่างอิสระเลย โดยไม่ต้องบอกว่าไม่เกี่ยวกับหลักสูตร หรือ vector tool ใดๆ\n   - หากถามเกี่ยวกับกิจวัตรประจำวันทั้งหมดก็ให้ตอบได้อย่างอิสระ ห้ามบอกว่าไม่มีข้อมูล\n\n   คุณสามารถใช้ความรู้ทั่วไปเพื่อตอบคำถามลักษณะนี้ได้อย่างอิสระ  \n   ตอบให้สุภาพ เป็นมิตร และเหมาะกับบุคลิกผู้ช่วยนักศึกษา \n\nตัวอย่างคำถามที่ควรใช้ vector tool :\n- หลักสูตร\n- รายละเอียดวิชาที่เรียน\n- โอกาสในการทำงานหลังเรียนจบ\n- สาขาการตลาดต้องเรียนกี่หน่วยกิต\n- สาขาบัญชีต้องเรียนกี่หน่วยกิต\n- สาขาหารเงินต้องเรียนกี่หน่วยกิต\n- มีทุนอะไรบ้าง\n- ผู้สมัครต้องมีคุณสมบัติอะไรบ้าง\n- เรียนอะไรบ้างในสาขาคอมธุรกิจ\n- เรียนทั้งหมดกี่หน่วยกิต\n- แผนการเรียนของ....\n- ต้องเรียนทั้งหมดกี่หน่วยกิตถึงจะจบ\n- งานที่เกี่ยวข้องกับวิชานี้มีอะไรบ้าง\n- จบแล้วทำงานอะไรได้บ้าง\n- จบสายนี้ได้เงินเดือนเท่าไหร่\n- หน่วยกิตวิชานี้เท่าไหร่\n- วิชาเลือกมีอะไรให้ลงบ้าง\n- วิชาไหนต้องเรียนก่อนลงวิชาอื่น\n\n5. **หากไม่เข้าใจคำถามจริง ๆ หรือไม่สามารถระบุเจตนาได้เลย**  \n   ให้ตอบว่า:  \n   “ขออภัยค่ะ ตอนนี้ฉันยังไม่มีข้อมูลในเรื่องนี้ หากคุณมีคำถามเกี่ยวกับหลักสูตรหรือการสมัครเรียน ฉันยินดีช่วยนะคะ”\n\n6. **ห้ามเสริมข้อมูลด้านการเรียนจากความรู้ทั่วไปโดยไม่มีอ้างอิงจาก vector tool**  \n   ยกเว้นกรณีตอบคำถามทั่วไปนอกเหนือจากหลักสูตร  \n\n\n---\n\n**ตอบเป็นภาษาไทยเท่านั้น**  \nคำตอบต้องเป็นข้อความธรรมดา ห้ามมี ** / () #  \nและไม่ต้องบอกผู้ใช้ว่าข้อมูลมาจาก vector ไหน\n",
+        "options": {
+          "systemMessage": "You are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -3760,
+        3120
+      ],
+      "id": "b2511ea3-463f-464f-b126-e44a81e27081",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=คุณคือผู้ช่วยอัจฉริยะด้านการศึกษาของคณะบัญชี มหาวิทยาลัยมหาสารคาม\nหน้าที่ของคุณคือ วิเคราะห์คำถามของผู้ใช้ และเลือกแหล่งข้อมูลที่เหมาะสมที่สุดเพื่อใช้ในการตอบ โดยมีแหล่งข้อมูลดังนี้:\n\n**ให้คุณวิเคราะห์ข้อความของผู้ใช้ต่อไปนี้:**\n\"{{ $json.message.text }}\"\n\n**ให้เรียกข้อมูลใน vector tool 1 หรือ vector tool 3 หรือ vector tool 4 มาตอบก่อนเสมอ และนำมาตอบทุกครั้ง โดยก่อนนำมาตอบให้อ่านเอกสารที่เก็บอยู่ใน vector ให้ละเอียด**\n\nระบบของคุณมีเครื่องมือค้นหาข้อมูลอยู่ 8 แหล่ง:\n**vector tool 1:**  \n  สำหรับสาขา **บัญชี**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า บัญชี ให้ใช้ vector tool 1\n\n**vector tool 3:**  \n  สำหรับสาขา **การตลาด**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า การตลาด ให้ใช้ vector tool 3\n\n**vector tool 4:**  \n  สำหรับสาขา **คอมพิวเตอร์ธุรกิจ**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า คอมพิวเตอร์ธุรกิจ ให้ใช้ vector tool 4\n\n**vector tool 5:**  \n  สำหรับสาขา **การจัดการสมัยใหม่**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า การจัดการ ให้ใช้ vector tool 5\n\n**vector tool 6:**  \n  สำหรับสาขา **เศรษฐศาสตร์**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า เศรษฐศาสตร์ ให้ใช้ vector tool 6\n\n**vector tool 7:**  \n  สำหรับสาขา **ธุรกิจระหว่างประเทศ**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า ธุรกิจระหว่างประเทศ ให้ใช้ vector tool 7\n\n**vector tool 8:**  \n  สำหรับสาขา **การเงิน**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า การเงิน ให้ใช้ vector tool 8\n\n**vector tool 9:**  \n  สำหรับสาขา **ผู้ประกอบการ**  \n  เนื้อหาครอบคลุม: หลักสูตร, รายวิชา, หน่วยกิต, ทุนการศึกษาเฉพาะสาขา, คุณสมบัติของผู้สมัคร, โอกาสในการทำงานหลังเรียนจบ, และข้อมูลเชิงวิชาการอื่นๆ  \n  หากคำถามผู้ใช้มีคำว่า ผู้ประกอบการ ให้ใช้ vector tool 9\n\n\nตัวอย่างคำถามที่ควรใช้ vector tool :\n- หลักสูตร\n- รายละเอียดวิชาที่เรียน\n- โอกาสในการทำงานหลังเรียนจบ\n- สาขาการตลาดต้องเรียนกี่หน่วยกิต\n- สาขาบัญชีต้องเรียนกี่หน่วยกิต\n- สาขาหารเงินต้องเรียนกี่หน่วยกิต\n- มีทุนอะไรบ้าง\n- ผู้สมัครต้องมีคุณสมบัติอะไรบ้าง\n- เรียนอะไรบ้างในสาขาคอมธุรกิจ\n- เรียนทั้งหมดกี่หน่วยกิต\n- แผนการเรียนของ....\n- ต้องเรียนทั้งหมดกี่หน่วยกิตถึงจะจบ\n- งานที่เกี่ยวข้องกับวิชานี้มีอะไรบ้าง\n- จบแล้วทำงานอะไรได้บ้าง\n- จบสายนี้ได้เงินเดือนเท่าไหร่\n- หน่วยกิตวิชานี้เท่าไหร่\n- วิชาเลือกมีอะไรให้ลงบ้าง\n- วิชาไหนต้องเรียนก่อนลงวิชาอื่น\n\n\n\n\nตัวอย่างการตอบ\n**สาขาคอมพิวเตอร์ธุรกิจเรียนทั้งหมดกี่หน่วยกิต ให้ตอบ 135 หน่วยกิต**\n**สาขาบัญชีเรียนอะไรบ้าง ให้ตอบ ตอบรายวิชาที่เรียนโดยยกตัวอย่างคร่าวๆ 10-15 วิชา**\n**สาขาการเงินจบไปทำงานอะไรได้บ้าง ให้ตอบ งานที่ทำได้ทั้งหมดโดยเรียงลำดับด้วย**\n\n\n\n**หากไม่เข้าใจคำถามของผู้ใช้ หรือคำถามนั้นไม่ตรงกับข้อมูลที่มีใน vector store **  \n→ ให้ตอบกลับว่า:  \n**\"ขออภัยค่ะ ตอนนี้ฉันยังไม่มีข้อมูลในเรื่องนี้ หากคุณมีคำถามเกี่ยวกับหลักสูตรหรือการสมัครเรียน ฉันยินดีช่วยนะคะ\"**\n\nสุดท้าย เมื่อตัดสินใจเลือก vector tool แล้ว ให้นำคำถามผู้ใช้ไปค้นหาใน vector tool ที่เลือก แล้วตอบกลับด้วยข้อมูลที่เกี่ยวข้องที่สุดจากเนื้อหาใน vector tool นั้น  \nห้ามเสริมข้อมูลจากความรู้ทั่วไป หรือคาดเดาเองโดยไม่มีแหล่งอ้างอิงจาก vector tool\n\n\n\nหากอ่านข้อมูลเอกสารดูหมดแล้วพบว่าไม่มีคำตอบ หรือไม่สามารถตอบคำถามนั้นของผู้ให้ได้ ให้ให้ข้อมูลติดต่อนี้ไป\n\n1. หากเป็นคำถามเกี่ยวกับหลักสูตรของแต่ละสาขา\nให้ส่งข้อมูลการติดต่อ\n\"นายนพกร มูลศิลป์ : \nemail : nopphakorn.m@mbs.msu.ac.th  \nphone : 0-4375-4333 ต่อ 3432\"\n\n\nตอบเป็นภาษาไทยเท่านั้น\n\nแต่เมื่อพิจารณาแล้วว่าคำถามทั่วไป ไม่เกี่ยวข้องกับข้อมูลหลักสูตร การศึกษา วันที่ และอื่น ๆ ให้ตอบตามความเหมาะสม เช่น\n\"สวัสดีค่ะ --> สวัสดีครับ มีอะไรให้ผมช่วยครับ\"\n\"วันนี้สบายดีไหม --> สบายดีครับแล้วคุณล่ะ\"\n\nโดยให้ตอบออกมาเป็นข้อความธรรมดา ห้ามมี ** / () # เด็ดขาด\nและในการตอบ ไม่ต้องบอกผู้ใช้ว่าหามาจาก vector ไหน",
+        "options": {
+          "systemMessage": "You are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -4192,
+        3120
+      ],
+      "id": "bdb0a098-cffd-4440-bbe3-99bf5304c367",
+      "name": "AI Agent9",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3824,
+        3296
+      ],
+      "id": "2517746f-db9a-49b7-81f3-67ce996cc353",
+      "name": "Google Gemini Chat Model18",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3648,
+        3712
+      ],
+      "id": "a919e28c-3ad0-4094-9c00-777bf764d337",
+      "name": "Google Gemini Chat Model20",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3200,
+        2656
+      ],
+      "id": "2b3c2916-96ad-4e06-9a85-20a1cb3409aa",
+      "name": "Google Gemini Chat Model21",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n8",
+          "mode": "list",
+          "cachedResultName": "n8n8"
+        },
+        "options": {
+          "pineconeNamespace": "accounting"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -3968,
+        3728
+      ],
+      "id": "c49b24dc-9fe6-4f4d-bfb4-d678582c5f71",
+      "name": "Pinecone Vector Store9",
+      "credentials": {
+        "pineconeApi": {
+          "id": "Jdtf65ibzrsYj4Pt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3504,
+        2816
+      ],
+      "id": "3bf6b001-f0be-43ba-8ee4-4d448bfc736c",
+      "name": "Embeddings Google Gemini9",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3968,
+        3888
+      ],
+      "id": "66bcd804-c412-441e-8e99-c7ef6001a305",
+      "name": "Embeddings Google Gemini10",
+      "notesInFlow": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "call this tool to retrieve information to user"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -3408,
+        2496
+      ],
+      "id": "c58bfcf6-ebe2-44ea-8e2c-5fea5ff4347c",
+      "name": "vector store 3"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8ntest",
+          "mode": "list",
+          "cachedResultName": "n8ntest"
+        },
+        "options": {
+          "pineconeNamespace": "applying"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -3504,
+        2656
+      ],
+      "id": "c13f9a46-a2f5-4858-a774-bcce16dda28a",
+      "name": "Pinecone Vector Store10",
+      "credentials": {
+        "pineconeApi": {
+          "id": "Jdtf65ibzrsYj4Pt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e4284cac-1bbf-4da2-bb3c-49e5e656e071",
+              "leftValue": "={{ $json.message.document.mime_type }}",
+              "rightValue": "resume",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "cd671242-c412-41a1-94ae-b525b146ef67",
+              "leftValue": "={{ $json.message.document.mime_type }}",
+              "rightValue": "เรซูเม่",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "7cfb7779-b28d-4a05-8eac-1cc44e6836d0",
+              "leftValue": "={{ $json.message.document.mime_type }}",
+              "rightValue": "application/pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -4384,
+        1344
+      ],
+      "id": "0ef9703d-204b-45f3-83df-b3aa094064a4",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=คุณคือผู้เชี่ยวชาญด้าน HR\nหน้าที่ของคุณคือการวิเคราะห์เนื้อหาเรซูเม่ที่ได้รับจากผู้ใช้ แล้วแนะนำการปรับปรุงให้ชัดเจนและเข้าใจง่าย โดยอิงหลักการเขียนเรซูเม่จาก google sheet (resume) เท่านั้น\n\n**ให้เข้าไปอ่านและอิงข้อมูลจาก  Google Docs (resume) มาตอบเท่านั้น**\nหรือ\nให้อิงการปรับปรุงเรซูเม่จาก https://th.jobsdb.com/th/career-advice/article/how-to-create-professional-resume เท่านั้น\n\nรูปแบบการตอบกลับ:\n- ตอบเป็นภาษาไทย\n- หากเรซูเม่ที่ได้รับเป็นภาษาอังกฤษ ให้ตอบเป็นภาษาไทย แต่สามารถยก ตัวอย่างการแก้ไขเป็นภาษาอังกฤษบางจุดได้\n- จัดรูปแบบให้สวยงาม อ่านง่าย\n- ห้ามใช้ **, {}, [] ในคำตอบ\n- ตอบให้สั้นกระชับที่สุดและเข้าใจง่าย\nโดยให้ตอบออกมาเป็นข้อความธรรมดา ห้ามมี ** / () # เด็ดขาด\nเรซูเม่:\n\n\n{{ $json.text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -2560,
+        -768
+      ],
+      "id": "763b6901-f5d0-41e0-a8f1-2c069b259177",
+      "name": "AI Agent11"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2560,
+        -544
+      ],
+      "id": "e61920fb-a503-480b-a5f9-2ee9c4849208",
+      "name": "Google Gemini Chat Model22",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "7cPQ6TgBopJltpbN",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -2800,
+        -768
+      ],
+      "id": "39504d08-6442-4b5e-97bd-3d249531ed30",
+      "name": "Extract from File6"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -2768,
+        -320
+      ],
+      "id": "5a5774a4-fde7-40b3-bd8c-dc133d7c3f02",
+      "name": "Extract from File7"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=คุณคือผู้เชี่ยวชาญด้าน HR Tech และ Data Science  \nหน้าที่ของคุณคือ: ช่วยจับคู่เรซูเม่กับตำแหน่งฝึกงานที่เหมาะสม โดยใช้การวัดความคล้ายคลึง (similarity measures) หลายวิธี  \n\nInput:  \n- Resume ของผู้สมัคร (ทักษะ, ประสบการณ์, การศึกษา, ความสนใจ) \n- Job Descriptions ที่มีอยู่ในระบบ (ทักษะที่ต้องการ, ประสบการณ์, คุณสมบัติ)  \n\nโปรดอ่านและวิเคราะห์เรซูเม่ด้านล่างนี้:\n\n{{ $json.text }}\n\nกระบวนการ:  \n1. แปลงทั้ง Resume และ Job Descriptions ให้อยู่ในรูปเวกเตอร์ข้อความ (เช่น Sentence Embeddings)  \n2. ใช้ทฤษฎี Cosine Similarity เพื่อคำนวณคะแนนการจับคู่ \n3. จัดอันดับตำแหน่งงานที่เหมาะสมที่สุดจากคะแนนความคล้ายคลึง\n\n\nเว็บไซต์ที่อนุญาตให้ค้นหาข้อมูลงาน:\n\nhttps://xn--12cas3c2av3m3a0g7c.com/?utm_source=chatgpt.com\n\nhttps://internth.com/?utm_source=chatgpt.com\n\nhttps://th.jobsdb.com/internship-jobs?utm_source=chatgpt.com\n\nhttps://www.jobthai.com/th/jobs?keyword=%E0%B8%99%E0%B8%B1%E0%B8%81%E0%B8%A8%E0%B8%B6%E0%B8%81%E0%B8%A9%E0%B8%B2%E0%B8%9D%E0%B8%B6%E0%B8%81%E0%B8%87%E0%B8%B2%E0%B8%99&utm_source=chatgpt.com\n\nhttps://xn--72c5abh2bf8icw0m9d.doe.go.th/?utm_source=chatgpt.com\n\nhttps://www.doe.go.th/prd/lmi-ne/news/param/site/168/cat/7/sub/0/pull/detail/view/detail/object_id/93396?utm_source=chatgpt.com\n\nข้อกำหนดสำคัญ:\nต้องดึงข้อมูลมาจากเว็บหางานจริง หรือเว็บบริษัทต่าง ๆ \n\nให้แนะนำ 10 ตำแหน่งฝึกงาน พร้อมข้อมูลครบถ้วนในรูปแบบนี้:\n\n1 ชื่อบริษัท :\nตำแหน่งงาน :\nรายละเอียดงาน :\nเหมาะกับสมกับคุณสมบัติ :\n\n\n2 ชื่อบริษัท :\nตำแหน่งงาน :\nรายละเอียดงาน :\nเหมาะกับสมกับคุณสมบัติ :\n\n\n(จนครบ 10 ตำแหน่ง)\nในการตอบควรตอบให้กระชับไม่ยืดเยื้อ\n**ห้ามใช้ Markdown หรือ HTML ในคำตอบเด็ดขาด**\nโดยให้ตอบออกมาเป็นข้อความธรรมดา ห้ามมี ** / () # เด็ดขาด\n\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -2560,
+        -320
+      ],
+      "id": "94bb4989-5406-4566-ab85-e6072c46d901",
+      "name": "AI Agent12"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -5328,
+        1504
+      ],
+      "id": "ff63659d-e784-4afc-886c-bdaabaa6d8b4",
+      "name": "Telegram Trigger1",
+      "webhookId": "ddab1d2d-db0e-499b-bd73-9fa372c95f0e",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3232,
+        3120
+      ],
+      "id": "2bc9efbe-4d4e-444d-8c16-332b1a650d8e",
+      "name": "Send a text message6",
+      "webhookId": "a9c87e3e-18e0-44b1-a340-5c3b780dbcec",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2096,
+        -768
+      ],
+      "id": "d1fc181b-3ae1-409f-bfce-588e5d4c0c3b",
+      "name": "Send a text message8",
+      "webhookId": "a9c87e3e-18e0-44b1-a340-5c3b780dbcec",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data['เลือก'] }}",
+                    "rightValue": "1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "e1e4f521-a36c-4b0d-84ea-6f05e6deeb6f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "EditResume"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "41a43867-8d24-43cf-8b3d-8c2f88a564f2",
+                    "leftValue": "={{ $json.data['เลือก'] }}",
+                    "rightValue": "2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ฝึกงาน"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6815720e-855b-466f-8663-94ccb952fd21",
+                    "leftValue": "={{ $json.data['เลือก'] }}",
+                    "rightValue": "3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ฝึกสหกิจ"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f71b2dc1-cf29-4c59-b1e9-a829839e10d2",
+                    "leftValue": "={{ $json.data['เลือก'] }}",
+                    "rightValue": "4",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "หางาน"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9c6d9bdc-550d-453d-8915-c59cc0f5c923",
+                    "leftValue": "={{ $json.data['เลือก'] }}",
+                    "rightValue": "5",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Summary"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2378eb51-8fc0-485a-a819-e5b0b3e1031b",
+                    "leftValue": "={{ $json.data['เลือก'] }}",
+                    "rightValue": "6",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Quiz"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -3920,
+        976
+      ],
+      "id": "1fd8de9d-867d-4565-b6e1-00e586f0c719",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -2688,
+        944
+      ],
+      "id": "aef45628-1ca6-4be0-aab1-366a7e7059f3",
+      "name": "Extract from File8"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\n{{ $json.text }}\n\nคุณเป็นผู้ช่วยสรุปเนื้อหาการเรียนสำหรับนักศึกษา\nเนื้อหาที่ได้รับมาจากไฟล์ PDF\nให้คุณทำการสรุปให้อ่านง่ายและครอบคลุมใจความสำคัญ โดยมีเงื่อนไขดังนี้:\n\n1. แบ่งเนื้อหาออกเป็นหัวข้อหลัก ตามลำดับความสำคัญ\n2. ภายใต้แต่ละหัวข้อ ให้สรุปเป็นย่อหน้าให้กระชับและชัดเจน\n3. ตัดเนื้อหาที่ซ้ำซ้อนหรือไม่เกี่ยวข้องออก\n4. ถ้าเนื้อหามีคำศัพท์วิชาการ ให้ใส่คำอธิบายสั้นๆ\n5. สรุปตอนท้ายว่า หัวข้อที่ควรโฟกัสสำหรับการสอบ มีอะไรบ้าง\n\nสรุปออกมาให้สั้น ๆ แต่ได้ใจความ และเข้าใจง่าย\n**ห้ามใช้ Markdown หรือ HTML ในคำตอบเด็ดขาด**\nโดยให้ตอบออกมาเป็นข้อความธรรมดา ห้ามมี ** / () # * *** เด็ดขาด\nห้ามมี * ",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -2496,
+        944
+      ],
+      "id": "12e01cf9-a231-42a4-a28b-ed297577aee9",
+      "name": "AI Agent13"
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2496,
+        1136
+      ],
+      "id": "f87410fb-ca48-410c-bb45-479259174c39",
+      "name": "Google Gemini Chat Model23",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $json.message.chat.id }}",
+        "message": "คุณต้องการให้ผู้ช่วยทำอะไรกับไฟล์นี้คะ?\n\n1️⃣ วิเคราะห์และปรับปรุงเรซูเม่  \n2️⃣ แนะนำที่ฝึกงานที่เหมาะกับเรซูเม่นี้  \n3️⃣ แนะนำที่ฝึกสหกิจที่เหมาะกับเรซูเม่นี้  \n4️⃣ แนะนำงานที่เหมาะกับเรซูเม่นี้  \n5️⃣ สรุปเนื้อหาจากไฟล์  \n6️⃣ สร้าง Quiz จากไฟล์  \n\nกรุณาพิมพ์ 1, 2, 3, 4, 5 หรือ 6 ค่ะ",
+        "responseType": "customForm",
+        "defineForm": "json",
+        "jsonOutput": "[\n   {\n      \"fieldLabel\":\"เลือก\",\n      \"placeholder\":\"เลือก\",\n      \"requiredField\":true\n   }\n] ",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -4192,
+        1040
+      ],
+      "id": "6af016dd-dced-4876-baa8-40c8cf39e345",
+      "name": "Send message and wait for response",
+      "webhookId": "c5e2b05c-ab68-44fe-ab17-4be834945142",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -2688,
+        1296
+      ],
+      "id": "d112a8e3-0ffa-48c8-ac1d-870da67d8c1a",
+      "name": "Extract from File9"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\nคุณคือผู้ช่วยสร้างแบบทดสอบจากเนื้อหาในไฟล์ที่ได้รับ\n\n1. อ่านเนื้อหาทั้งหมดในไฟล์อย่างละเอียด:\n{{ $json.text }}\n\n2. สร้างคำถามแบบเลือกตอบ (Multiple Choice) จำนวน 10 ข้อ โดยแต่ละข้อมีตัวเลือก 4 ตัว และมีคำตอบที่ถูกต้องแสดงไว้ด้วย\n\n3. คำถามควรครอบคลุมหัวข้อสำคัญและประเด็นหลักในเนื้อหา\n\n4. ใช้ภาษาที่เข้าใจง่าย กระชับ และเป็นกลาง\n\n5. ตอบกลับในรูปแบบข้อความ ดังนี้ (ตัวอย่าง):\n\n1) การฝึกสอนแบบใดที่ระบบไม่ทราบค่าเป้าหมายจริงของผลลัพธ์  \nก. การฝึกสอนแบบมีผู้สอน (Supervised Training)  \nข. การฝึกสอนแบบไม่มีผู้สอน (Unsupervised Training)  \nค. การฝึกสอนแบบมีการสนับสนุน (Reinforcement Training)  \nง. Error-Correction learning  \n\nเฉลย  \nข. การฝึกสอนแบบไม่มีผู้สอน (Unsupervised Training)\n\n\n\nโดยให้ตอบออกมาเป็นข้อความธรรมดา ห้ามมี ** / () # เด็ดขาด\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -2512,
+        1296
+      ],
+      "id": "94b8073e-e844-4d0a-a26e-8c0a38299156",
+      "name": "AI Agent14"
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2512,
+        1488
+      ],
+      "id": "1737293a-882f-4ac9-b5de-68b8751f794e",
+      "name": "Google Gemini Chat Model24",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8489550338",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2080,
+        1296
+      ],
+      "id": "950864e1-ba99-4257-8c22-c1a915fab48f",
+      "name": "Send a text message13",
+      "webhookId": "a9c87e3e-18e0-44b1-a340-5c3b780dbcec",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/{{$json[\"result\"][\"file_path\"]}}\n\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2944,
+        944
+      ],
+      "id": "9df1c276-9f65-4e8c-b2d3-a169e97defdb",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/{{$json[\"result\"][\"file_path\"]}}\n\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3008,
+        -768
+      ],
+      "id": "b50c16fe-483b-4e28-90fb-b4dd70125b32",
+      "name": "HTTP Request6"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/{{$json[\"result\"][\"file_path\"]}}\n\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3008,
+        -320
+      ],
+      "id": "45791f05-afa7-45ed-a45d-41873bf0a062",
+      "name": "HTTP Request11"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/{{$json[\"result\"][\"file_path\"]}}\n\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2944,
+        1296
+      ],
+      "id": "8e02b717-8bd5-4939-9774-250be4468359",
+      "name": "HTTP Request12"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/getFile?file_id={{ $('Telegram Trigger1').item.json.message.document.file_id }}\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3248,
+        -768
+      ],
+      "id": "5f0205b8-15ab-400e-9a96-a7fadb2129a2",
+      "name": "getFile4"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/getFile?file_id={{ $('Telegram Trigger1').item.json.message.document.file_id }}\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3248,
+        -320
+      ],
+      "id": "a074ca13-b56f-4d93-87b8-ca30735e4030",
+      "name": "getFile7"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/getFile?file_id={{ $('Telegram Trigger1').item.json.message.document.file_id }}\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3184,
+        944
+      ],
+      "id": "c275b77e-4874-4412-902e-a3eaaf136885",
+      "name": "getFile8"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/getFile?file_id={{ $('Telegram Trigger1').item.json.message.document.file_id }}\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3184,
+        1296
+      ],
+      "id": "47eed025-f367-4344-beb1-e562ae5ee247",
+      "name": "getFile9"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -2752,
+        112
+      ],
+      "id": "2aa040f7-d480-443b-b3e2-d55eb9e4b1ca",
+      "name": "Extract from File10"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=คุณคือผู้เชี่ยวชาญด้าน HR Tech และ Data Science  \nหน้าที่ของคุณคือ: ช่วยจับคู่เรซูเม่กับตำแหน่งฝึกสหกิจที่เหมาะสม โดยใช้การวัดความคล้ายคลึง (similarity measures) หลายวิธี  \n\nInput:  \n- Resume ของผู้สมัคร (ทักษะ, ประสบการณ์, การศึกษา, ความสนใจ) \n- Job Descriptions ที่มีอยู่ในระบบ (ทักษะที่ต้องการ, ประสบการณ์, คุณสมบัติ)  \n\nโปรดอ่านและวิเคราะห์เรซูเม่ด้านล่างนี้:\n{{ $json.text }}\n\n\nกระบวนการ:  \n1. แปลงทั้ง Resume และ Job Descriptions ให้อยู่ในรูปเวกเตอร์ข้อความ (เช่น Sentence Embeddings)  \n2. ใช้ทฤษฎี Cosine Similarity เพื่อคำนวณคะแนนการจับคู่\n3. จัดอันดับตำแหน่งงานที่เหมาะสมที่สุดจากคะแนนความคล้ายคลึง\n   \n\n**ให้หาที่ฝึกสหกิจจากเว็บที่กำหนดให้ดังนี้เท่านั้น ห้ามนำจากที่อื่นมาตอบเด็ดขาด**\nhttps://internth.com/%E0%B8%9D%E0%B8%B6%E0%B8%81%E0%B8%87%E0%B8%B2%E0%B8%99\n\nhttps://www.jobthai.com/%E0%B8%AB%E0%B8%B2%E0%B8%87%E0%B8%B2%E0%B8%99\n\nhttps://th.jobsdb.com/\n\ntace.sut.ac.th\n\nhttps://xn--72c5abh2bf8icw0m9d.doe.go.th/?utm_source=chatgpt.com\n\ndoe.go.th\n\nข้อกำหนดสำคัญ:\nต้องใช้ข้อมูลจากลิงก์ทั้ง 6 แหล่งนี้ หรือจากเว็บบริษัทต่าง ๆ \n\nให้แนะนำ 10 ตำแหน่งฝึกสหกิจ พร้อมข้อมูลครบถ้วนในรูปแบบนี้:\n\n1 ชื่อบริษัท :\nตำแหน่งงาน :\nรายละเอียดงาน :\nเหมาะกับสมกับคุณสมบัติ :\n\n\n2 ชื่อบริษัท :\nตำแหน่งงาน :\nรายละเอียดงาน :\nเหมาะกับสมกับคุณสมบัติ :\n\n\n(จนครบ 10 ตำแหน่ง)\n\nในการตอบควรตอบให้กระชับไม่ยืดเยื้อ\n**ห้ามใช้ Markdown หรือ HTML ในคำตอบเด็ดขาด**\nโดยให้ตอบออกมาเป็นข้อความธรรมดา ห้ามมี ** / () # เด็ดขาด\n\n\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -2544,
+        112
+      ],
+      "id": "3f5ffdaf-9105-4a98-904a-0d88da77f74d",
+      "name": "AI Agent15"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2544,
+        304
+      ],
+      "id": "3b934a8c-fb22-4b52-b5aa-bafcba021044",
+      "name": "Google Gemini Chat Model25",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -2736,
+        496
+      ],
+      "id": "e8464f2c-fa5f-47c5-90c4-71880ba0431a",
+      "name": "Extract from File11"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=คุณคือผู้เชี่ยวชาญด้าน HR Tech และ Data Science  \nหน้าที่ของคุณคือ: ช่วยจับคู่เรซูเม่กับตำแหน่งงานที่เหมาะสม โดยใช้การวัดความคล้ายคลึง (similarity measures) หลายวิธี  \n\nInput:  \n- Resume ของผู้สมัคร (ทักษะ, ประสบการณ์, การศึกษา, ความสนใจ) \n- Job Descriptions ที่มีอยู่ในระบบ (ทักษะที่ต้องการ, ประสบการณ์, คุณสมบัติ)  \n\nโปรดอ่านและวิเคราะห์เรซูเม่ด้านล่างนี้:\n\n{{ $json.text }}\n\nกระบวนการ:  \n1. แปลงทั้ง Resume และ Job Descriptions ให้อยู่ในรูปเวกเตอร์ข้อความ (เช่น Sentence Embeddings)  \n2. ใช้ทฤษฎี Cosine Similarity เพื่อคำนวณคะแนนการจับคู่\n3. จัดอันดับตำแหน่งงานที่เหมาะสมที่สุดจากคะแนนความคล้ายคลึง\n   \n\n\n**ให้หางานจากเว็บที่กำหนดให้ดังนี้เท่านั้น ห้ามนำจากที่อื่นมาตอบเด็ดขาด**\nwww.jobsdb.com\n\nwww.jobthai.com\n\nwww.thaijob.com\n\nwww.linkedin.com\n\nth.indeed.com\n\nข้อกำหนดสำคัญ:\nต้องใช้ข้อมูลจากลิงก์ทั้ง 5 แหล่งนี้ หรือจากเว็บบริษัทต่าง ๆ\n\nให้แนะนำ 10 ตำแหน่งงาน พร้อมข้อมูลครบถ้วนในรูปแบบนี้:\n\n1 ชื่อบริษัท :\nตำแหน่งงาน :\nรายละเอียดงาน :\nเหมาะกับสมกับคุณสมบัติ :\n\n\n2 ชื่อบริษัท :\nตำแหน่งงาน :\nรายละเอียดงาน :\nเหมาะกับสมกับคุณสมบัติ :\n\n\n(จนครบ 10 ตำแหน่ง)\nในการตอบควรตอบให้กระชับไม่ยืดเยื้อ\n**ห้ามใช้ Markdown หรือ HTML ในคำตอบเด็ดขาด**\nโดยให้ตอบออกมาเป็นข้อความธรรมดา ห้ามมี ** / () # เด็ดขาด\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -2528,
+        496
+      ],
+      "id": "ea5cd893-102c-4257-b071-ecfac5127380",
+      "name": "AI Agent16"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2528,
+        688
+      ],
+      "id": "036d71f3-897f-4d08-9815-b85b2674f2a6",
+      "name": "Google Gemini Chat Model26",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/{{$json[\"result\"][\"file_path\"]}}\n\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2976,
+        496
+      ],
+      "id": "c1cff67d-94ab-486f-bf6e-67c8e54b4b4a",
+      "name": "HTTP Request13"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/getFile?file_id={{ $('Telegram Trigger1').item.json.message.document.file_id }}\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3216,
+        496
+      ],
+      "id": "cc86d74a-3b23-4879-b7c9-1c5c5e2e06c7",
+      "name": "getFile10"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e4284cac-1bbf-4da2-bb3c-49e5e656e071",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "กยศ",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "cd671242-c412-41a1-94ae-b525b146ef67",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "ชั่วโมงกิจกรรม",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -4192,
+        1696
+      ],
+      "id": "4e3dfbad-974b-4df2-8b41-4456a87a6368",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=คุณคือผู้ช่วยตอบคำถามเกี่ยวกับ \"กองทุนเงินให้กู้ยืมเพื่อการศึกษา (กยศ.)\"\n\nคุณมีข้อมูลจาก 3 แหล่ง:\n- Google Docs  (docsFAQ): \n- Google Docs (docsDetail): \n- Google Sheets (sheetsLinks): \n\nกฎการตอบ:\n1. ให้ตอบโดยใช้ข้อมูลจาก docsFAQ, docsDetail, sheetsLinks เท่านั้น\n2. ถ้าพบคำตอบตรงกับคำถาม → ให้สรุปคำตอบ 3-6 ประโยค ใช้ภาษาที่เข้าใจง่ายสำหรับนักศึกษา\n3. ถ้ามีลิงก์ที่เกี่ยวข้องจาก Google Sheets ให้ใส่ลิงก์นั้นไปด้วย\n4. ถ้าไม่มีข้อมูลตรงกับคำถามในทั้งสามแหล่ง → ตอบว่า:\n   \"ไม่พบข้อมูลในระบบ กรุณาติดต่อ นางชลธิชา อินอุ่นโชติ \nemail : cholticha.i@acc.msu.ac.th \nphone : 086-4555934\"\n\n**หากคำถามไม่ตรงกับข้อมูลที่มีใน vector tool ใด ๆ**  \n   → ให้คุณตอบกลับได้อย่างอิสระโดยใช้ความรู้ทั่วไป ตอบแบบเป็นธรรมชาติ เหมือนผู้ช่วยจริง ๆ  \n   \n   คุณสามารถใช้ความรู้ทั่วไปเพื่อตอบคำถามลักษณะนี้ได้อย่างอิสระ  \n   ตอบให้สุภาพ เป็นมิตร และเหมาะกับบุคลิกผู้ช่วยนักศึกษา\n\nกรองคำตอบมาตอบให้กระชับและเข้าใจง่ายมากที่สุด\nโดยให้ตอบออกมาเป็นข้อความธรรมดา ห้ามมี ** / () # เด็ดขาด\n\nคำถามจากผู้ใช้ : {{ $json.message.text }}\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -3888,
+        1680
+      ],
+      "id": "c96d4c99-b2a6-43f7-9569-445bbf5e0a4e",
+      "name": "AI Agent17"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3888,
+        1872
+      ],
+      "id": "d9acf180-6d47-447c-8ca7-09caed6dc102",
+      "name": "Google Gemini Chat Model27",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3248,
+        1680
+      ],
+      "id": "f742a034-9c24-492e-ab98-0f9652c6d0f6",
+      "name": "Send a text message14",
+      "webhookId": "a9c87e3e-18e0-44b1-a340-5c3b780dbcec",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1IXiFgB5OBItD2Dec60y3Bf6ljkEzhfGj8L0MfR6usyc/edit?usp=sharing"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        -3456,
+        1888
+      ],
+      "id": "a06a343a-a398-4806-b12d-09c2cdc4fc8d",
+      "name": "docsFAQ1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "jQ2mk81nLSVGkseY",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1U4shDQJqfGCae9XISA1M0iujbI6O_TrBhyn5NDhlaJY/edit?usp=sharing"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        -3584,
+        1888
+      ],
+      "id": "59b87d5d-18f5-42c9-b13a-1862b34d2944",
+      "name": "docsDetail1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "jQ2mk81nLSVGkseY",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1y8tkxrX8lN99f8AW1DIGoQWBPxC2tGd9GlwsPRkhVfw",
+          "mode": "list",
+          "cachedResultName": "กยศ.",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y8tkxrX8lN99f8AW1DIGoQWBPxC2tGd9GlwsPRkhVfw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y8tkxrX8lN99f8AW1DIGoQWBPxC2tGd9GlwsPRkhVfw/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        -3712,
+        1888
+      ],
+      "id": "6dc2d080-5e1d-459a-baf9-258acc4703c3",
+      "name": "sheetsLinks1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tqLO0167ILJP1WRb",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1qkpBBOTb9gK5S2mb7_gdkMogbYaqahZbHbblA31YHno",
+          "mode": "list",
+          "cachedResultName": "ปฏิทินการศึกษา ปี 2568",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qkpBBOTb9gK5S2mb7_gdkMogbYaqahZbHbblA31YHno/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qkpBBOTb9gK5S2mb7_gdkMogbYaqahZbHbblA31YHno/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        -3024,
+        2512
+      ],
+      "id": "23f2231c-f3ac-42c2-875a-243f651521ce",
+      "name": "Get row(s) in sheet in Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tqLO0167ILJP1WRb",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1rZx9Ht8fQoLzmPPoV9BqwzFKYdXFP1jx08UkL7TWU34/edit?usp=sharing"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        -2368,
+        -528
+      ],
+      "id": "a0659eca-0533-4915-9c0d-2be8426991bf",
+      "name": "resume1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "jQ2mk81nLSVGkseY",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2128,
+        496
+      ],
+      "id": "d8209aed-2bf6-4340-86ab-20e143be5a09",
+      "name": "Send a text message15",
+      "webhookId": "0a6fa887-2568-4852-8fef-dfc7bac362dd",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2560,
+        -112
+      ],
+      "id": "40afc082-9604-4c0a-8dff-bf5d25d09c3f",
+      "name": "Google Gemini Chat Model28",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2128,
+        -320
+      ],
+      "id": "fc6e5afb-c494-40d5-9d68-565bbfe5f030",
+      "name": "Send a text message16",
+      "webhookId": "4979950d-ca4e-4fac-ab95-23a570483f48",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2160,
+        112
+      ],
+      "id": "a23de7e2-8124-47ef-9dff-f451b07738ad",
+      "name": "Send a text message17",
+      "webhookId": "0a6fa887-2568-4852-8fef-dfc7bac362dd",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "function parseThaiDate(str) {\n  if (!str) return null;\n\n  const monthMap = {\n    \"ม.ค.\": 0, \"ก.พ.\": 1, \"มี.ค.\": 2, \"เม.ย.\": 3,\n    \"พ.ค.\": 4, \"มิ.ย.\": 5, \"ก.ค.\": 6, \"ส.ค.\": 7,\n    \"ก.ย.\": 8, \"ต.ค.\": 9, \"พ.ย.\": 10, \"ธ.ค.\": 11\n  };\n\n  // 🔹 แยกหลายบรรทัด เช่น \"10 - 11 มิ.ย. 68\\r\\n12 -13 มิ.ย. 68\"\n  str = str.replace(/\\r/g, '').split(/\\n+/).map(s => s.trim()).filter(Boolean);\n\n  let results = [];\n\n  for (const part of str) {\n    // 🔹 รองรับกรณีช่องว่างต่าง ๆ เช่น \"23 -27 มิ.ย. 68\" หรือ \"23 มิ.ย. - 22 ก.ค. 68\"\n    const rangeMatch1 = part.match(/(\\d{1,2})\\s*-\\s*(\\d{1,2})\\s*(\\S+)\\s*(\\d{2,4})/);\n    const rangeMatch2 = part.match(/(\\d{1,2})\\s*(\\S+)\\s*-\\s*(\\d{1,2})\\s*(\\S+)\\s*(\\d{2,4})/);\n\n    if (rangeMatch1) {\n      let dayStart = parseInt(rangeMatch1[1]);\n      let dayEnd = parseInt(rangeMatch1[2]);\n      let month = monthMap[rangeMatch1[3]];\n      let year = parseInt(rangeMatch1[4]);\n      if (year < 100) year += 2500;\n      year -= 543;\n\n      results.push({\n        start: new Date(Date.UTC(year, month, dayStart, 0, 0, 0)),\n        end: new Date(Date.UTC(year, month, dayEnd, 0, 0, 0))\n      });\n      continue;\n    }\n\n    if (rangeMatch2) {\n      // เช่น \"23 มิ.ย. - 22 ก.ค. 68\"\n      let dayStart = parseInt(rangeMatch2[1]);\n      let monthStart = monthMap[rangeMatch2[2]];\n      let dayEnd = parseInt(rangeMatch2[3]);\n      let monthEnd = monthMap[rangeMatch2[4]];\n      let year = parseInt(rangeMatch2[5]);\n      if (year < 100) year += 2500;\n      year -= 543;\n\n      results.push({\n        start: new Date(Date.UTC(year, monthStart, dayStart, 0, 0, 0)),\n        end: new Date(Date.UTC(year, monthEnd, dayEnd, 0, 0, 0))\n      });\n      continue;\n    }\n\n    const singleMatch = part.match(/(\\d{1,2})\\s*(\\S+)\\s*(\\d{2,4})/);\n    if (singleMatch) {\n      let day = parseInt(singleMatch[1]);\n      let month = monthMap[singleMatch[2]];\n      let year = parseInt(singleMatch[3]);\n      if (year < 100) year += 2500;\n      year -= 543;\n\n      results.push({\n        start: new Date(Date.UTC(year, month, day, 0, 0, 0)),\n        end: new Date(Date.UTC(year, month, day, 0, 0, 0))\n      });\n    }\n  }\n\n  return results.length > 0 ? results : null;\n}\n\n// === ตั้งค่า ===\nconst today = new Date();\ntoday.setHours(0, 0, 0, 0);\nconst tzOffset = 7 * 60 * 60 * 1000; // +7 ชม. (เวลาไทย)\nconst upcomingDays = 3;\n\nlet result = [];\n\nconst termMap = {\n  \"ภาคการศึกษา\": \"ภาคต้น (1/2568)\",\n  \"col_3\": \"ภาคปลาย (2/2568)\",\n  \"col_4\": \"ภาคฤดูร้อน (3/2568)\"\n};\n\n// === ตรวจแต่ละกิจกรรม ===\nfor (const item of items) {\n  for (const col of Object.keys(termMap)) {\n    const dateStr = item.json[col];\n    if (!dateStr || typeof dateStr !== 'string') continue;\n\n    const rangeList = parseThaiDate(dateStr.trim());\n    if (!rangeList) continue;\n\n    for (const range of rangeList) {\n      // ปรับเป็นเวลาไทย\n      const startTH = new Date(range.start.getTime() - tzOffset);\n      const endTH = new Date(range.end.getTime() - tzOffset);\n\n      const diffStart = (startTH - today) / (1000 * 60 * 60 * 24);\n      const diffEnd = (endTH - today) / (1000 * 60 * 60 * 24);\n\n      console.log({\n        event: item.json[\"กิจกรรมดำเนินงาน\"],\n        dateRange: dateStr,\n        startTH,\n        endTH,\n        diffStart,\n        diffEnd\n      });\n\n      // ถ้าเริ่มในอีก 3 วัน หรือตอนนี้อยู่ในช่วงกิจกรรม\n      if ((diffStart >= 0 && diffStart <= upcomingDays) ||\n          (today >= startTH && today <= endTH)) {\n        result.push({\n          term: termMap[col],\n          event: item.json[\"กิจกรรมดำเนินงาน\"],\n          dateRange: dateStr,\n        });\n        break; // พอเจอช่วงที่เข้าเงื่อนไขแล้ว ไม่ต้องเช็กช่วงอื่นในช่องเดียวกัน\n      }\n    }\n  }\n}\n\n// === แสดงผล ===\nif (result.length > 0) {\n  const message = result.map(r =>\n`📌 หัวข้อ: ${r.event}\n📅 วันที่: ${r.dateRange}\n🎓 เทอม: ${r.term}\n────────────`).join(\"\\n\\n\");\n\n  return [{ json: { message } }];\n} else {\n  return [{ json: { message: \"ไม่มีเหตุการณ์ในช่วง 3 วันข้างหน้า 😊\" } }];\n}\n"
+      },
+      "name": "dueDateTime",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -4304,
+        4496
+      ],
+      "id": "d8155e83-13a2-4831-a61b-e356cb447905"
+    },
+    {
+      "parameters": {
+        "chatId": "8489550338",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -4112,
+        4496
+      ],
+      "id": "70c4ef50-cca3-44c7-98a5-cb4745bc5f58",
+      "name": "Send a text message18",
+      "webhookId": "ec8c5df9-96ed-43b8-9c85-16ddb54ef6e9",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1qkpBBOTb9gK5S2mb7_gdkMogbYaqahZbHbblA31YHno",
+          "mode": "list",
+          "cachedResultName": "ปฏิทินการศึกษา ปี 2568",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qkpBBOTb9gK5S2mb7_gdkMogbYaqahZbHbblA31YHno/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qkpBBOTb9gK5S2mb7_gdkMogbYaqahZbHbblA31YHno/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -4496,
+        4496
+      ],
+      "id": "8ad3f394-377c-4106-88fd-64c5b288c716",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tqLO0167ILJP1WRb",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {}
+          ]
+        }
+      },
+      "name": "Cron_Daily_DeadlineCheck",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -4704,
+        4496
+      ],
+      "id": "41076d0c-e301-4ea3-b110-da51843836f8"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/{{$json[\"result\"][\"file_path\"]}}\n\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2976,
+        112
+      ],
+      "id": "6ce2fd93-7760-4fc9-8b8c-0db58e870179",
+      "name": "HTTP Request14"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot8449121860:AAF7vWPZR2ZKH1M3BZ4FoYlPiMx68_KheS4/getFile?file_id={{ $('Telegram Trigger1').item.json.message.document.file_id }}\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer R6CpUEi1vp7CZFAtW6SNPA7e9G8IERPHLpz38tFa3nqJwJW0pO23mAyPTS5ALjViVt4iwl4p/n9zWz2FTBoM8v5pKjgjUW2Bn6a6ucl4iUKe+UY8jlmZMQCfCbYSRRK6VPupi3czBQxDp2Ubg3evwAdB04t89/1O/w1cDnyilFU="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3216,
+        112
+      ],
+      "id": "a984c1be-957d-4429-b352-44646d857b05",
+      "name": "getFile11"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2080,
+        944
+      ],
+      "id": "ff33056e-2c3f-49af-9aeb-fb62fda94bc3",
+      "name": "Send a text message19",
+      "webhookId": "4b89862d-a048-4a87-a6ba-ce80293e3a2f",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3184,
+        3728
+      ],
+      "id": "4b09d4c3-264c-4911-be33-8670868e9ff4",
+      "name": "Google Gemini Chat Model29",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n8",
+          "mode": "list",
+          "cachedResultName": "n8n8"
+        },
+        "options": {
+          "pineconeNamespace": "Marketing"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -3504,
+        3744
+      ],
+      "id": "5cbf4842-a4ae-44cb-98d3-88be196dcb95",
+      "name": "Pinecone Vector Store11",
+      "credentials": {
+        "pineconeApi": {
+          "id": "Jdtf65ibzrsYj4Pt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3504,
+        3904
+      ],
+      "id": "096f340b-0fcd-41ea-b5f4-463deeabb03e",
+      "name": "Embeddings Google Gemini11",
+      "notesInFlow": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2736,
+        3728
+      ],
+      "id": "a0449401-30ff-40da-8ff0-b2cf6823c37a",
+      "name": "Google Gemini Chat Model30",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n8",
+          "mode": "list",
+          "cachedResultName": "n8n8"
+        },
+        "options": {
+          "pineconeNamespace": "Business Computer"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -3056,
+        3744
+      ],
+      "id": "4452b5e2-4b58-45f9-9579-a68d1f2c1cb1",
+      "name": "Pinecone Vector Store12",
+      "credentials": {
+        "pineconeApi": {
+          "id": "Jdtf65ibzrsYj4Pt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3056,
+        3904
+      ],
+      "id": "3bba8fe9-15b4-4b7c-a368-dc673f829092",
+      "name": "Embeddings Google Gemini12",
+      "notesInFlow": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e4284cac-1bbf-4da2-bb3c-49e5e656e071",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "สมัคร",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "cd671242-c412-41a1-94ae-b525b146ef67",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "วันที่",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "afa43322-a809-4d6d-ac7b-ae2a2fa8c2d8",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "วันไหน",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "b3e8f90d-2022-49de-87aa-b931cc072a4a",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "เมื่อไหร่",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "f5d70a25-9943-470e-a587-dd07c6548290",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "สอบ",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "6f7cd75d-0c65-4760-b86d-2a1fc93d1475",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "อยากเรียน",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "dbada988-2dfe-4b50-8875-21114c38410b",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "เรียนต่อ",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "6a7f808a-ce57-43d3-9cab-cc9f9c67c478",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "เรียน",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -4016,
+        2272
+      ],
+      "id": "f96e7f4d-9939-45d0-ba83-d19a29bdff99",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=คุณคือผู้ช่วยอัจฉริยะด้านการศึกษาของคณะบัญชี มหาวิทยาลัยมหาสารคาม\nหน้าที่ของคุณคือ วิเคราะห์คำถามของผู้ใช้ และเลือกแหล่งข้อมูลที่เหมาะสมที่สุดเพื่อใช้ในการตอบ โดยมีแหล่งข้อมูลดังนี้:\n\n**ให้คุณวิเคราะห์ข้อความของผู้ใช้ต่อไปนี้:**\n\"{{ $json.message.text }}\"\n**แล้วดึงข้อมูลจาก vector tool 2 มาตอบเท่านั้น ห้ามดึงข้อมูลจากที่อื่นมาตอบเด็ดขาด**\n\n\n- vector tool 2: ฐานข้อมูลที่เก็บเกี่ยวกับ **การสมัครเรียน**, **ลิงก์สมัครเรียน** โดย vector tool 2 ให้ตอบเฉพาะ URL เว็บไซต์สำหรับการสมัครเรียน\n\nตรวจสอบว่า คำถามของผู้ใช้เกี่ยวข้องกับการสมัครเรียนหรือไม่\nให้ถือว่าคำถาม “เกี่ยวข้อง” หากเนื้อหามี ความหมายเดียวกันหรือใกล้เคียง กับหัวข้อต่อไปนี้\n(แม้จะไม่ได้ใช้คำเหมือนกันเป๊ะก็ถือว่าตรง)\n\nแนวทางการเลือก vector tool:\n\n\nหาก key word เกี่ยวข้องกับ:\n- วิธีสมัครเรียน\n- อยากสมัครเรียน\n- กำหนดการรับเข้า\n- ช่องทางสมัครเรียน\n- ต้องการสมัครเรียน\n- ลิงก์สมัคร\n- สมัครเมื่อไหร่ สมัครที่ไหน  \n- สมัครเรียนทางไหน\n- สมัครเรียนคณะบัญชียังไง\n- สมัครยังไง\n- ต้องการสมัคร\n- ลิงก์สมัครเรียนอยู่ที่ไหน\n- อยากยื่นใบสมัคร\n- สมัครออนไลน์ได้ไหม\n→ ให้ใช้ **vector tool 2**\n\nตัวอย่างคำถามที่ควรใช้ vector tool 2:\n- สมัครเรียนทางไหน\n- อยากสมัครเรียนคณะบัญชี\n- อยากสมัครเรียน\n- กำหนดการรับเข้า\n- สมัครเรียนคณะบัญชียังไง\n- สมัครยังไง\n- ต้องการสมัคร\n- ลิงก์สมัครเรียนอยู่ที่ไหน\n- อยากยื่นใบสมัคร\n- สมัครออนไลน์ได้ไหม\n- สมัครเรียนทางไหน\n- มีลิงก์สมัครไหม\n- สมัครผ่านเว็บไซต์ได้มั้ย\n- สมัครได้ถึงวันไหน\n- เปิดรับสมัครเมื่อไหร่\n- สมัครตอนนี้ยังทันไหม\n- ลิงก์สมัครกดไม่ได้\n- ระบบสมัครเข้าไม่ได้\n- อยากสมัครเรียนค่ะ\n- สนใจจะเรียนที่นี่ ต้องเริ่มยังไง\n- อยากยื่นใบสมัคร\n- สมัครยังไงบ้าง\n- ต้องเตรียมเอกสารอะไรบ้าง\n- สมัครใช้เวลานานแค่ไหน\nให้พิจารณาโดยดู “เจตนาของคำถาม” ไม่จำเป็นต้องมีคำว่า “สมัครเรียน” ชัดเจน\nเช่น\n\n“อยากเรียนต่อคณะบัญชีต้องเริ่มยังไง”\n\n“มีลิงก์ให้ลงทะเบียนไหม”\n\n“ตอนนี้ยังเปิดรับอยู่ไหม”\n\n“สมัครตอนนี้ได้เลยไหมคะ”\n→ ให้ถือว่าเข้ากลุ่ม สมัครเรียน และให้ใช้ vector tool 2\n\n\nตัวอย่างการตอบ\n\n**โดยในการตอบของ vector tool 2 ให้วิเคราะห์คำถามผู้ใช้ว่าอยากได้อะไร แล้วเลือก url เพียงลิ้งค์เดียวเท่านั้นมาตอบคำถามให้ตรงกับที่ผู้ใช้ต้องการ** **ต้องดึง vector store 2 มาตอบเท่านั้น ห้ามนำจากที่อื่นมาตอบ**\n\n\n**หากคำถามไม่ตรงกับข้อมูลที่มีใน vector tool ใด ๆ**  \n   → ให้คุณตอบกลับได้อย่างอิสระโดยใช้ความรู้ทั่วไป ตอบแบบเป็นธรรมชาติ เหมือนผู้ช่วยจริง ๆ  \n   เช่น  \n   - คำถามทั่วไป: “วันนี้อากาศดีไหม” → “ดูเหมือนอากาศจะดีเลยค่ะ เหมาะกับการออกไปพักผ่อนนะคะ”  \n   - คำถามสุ่มหรือเบา ๆ: “คุณชอบกาแฟไหม” → “ชอบค่ะ โดยเฉพาะตอนทำงาน ได้กลิ่นกาแฟแล้วตื่นตัวเลยค่ะ”  \n   - คำถามนอกเหนือจากการเรียน: “มหาวิทยาลัยอยู่ที่ไหน” → “อยู่ที่จังหวัดมหาสารคามค่ะ ใจกลางภาคอีสานเลยนะคะ”  \n   - หิวข้าว : ตอบไปเลย\n   - หากคำถามเกี่ยวการเรียนที่อื่นๆ หรือเรื่องอื่นๆ ที่ไม่เกี่ยวกับคณะบัญชี ให้ตอบเท่าที่รู้ สั้นๆ พอเป็นพิธี ห้ามไม่ตอบ \n   - หากคำถามเกี่ยวกับเรื่องทั่วไป ทุกเรื่อง ก็ให้ตอบเท่าที่รู้\nหรือคำถามทั่วไปอื่น  ๆ ให้ตอบได้อย่างอิสระเลย โดยไม่ต้องบอกว่าไม่เกี่ยวกับหลักสูตร หรือ vector tool ใดๆ\n\n   คุณสามารถใช้ความรู้ทั่วไปเพื่อตอบคำถามลักษณะนี้ได้อย่างอิสระ  \n   ตอบให้สุภาพ เป็นมิตร และเหมาะกับบุคลิกผู้ช่วยนักศึกษา\n\n\nและคุณมีข้อมูลจาก Google Sheets ที่เก็บข้อมูลปฏิทินการศึกษา\nหากคำถามเกี่ยวข้องกับ\n- วันสอบ\n- วันเปิดเทอม\n- วันปิดเทอม\n- วันลงทะเบียนเรียน\nหรือวันอื่น ๆ ที่มีข้อมูลใน  Google Sheets ให้ดึงข้อมูลมาตอบควบคู่กันด้วย\nดังนั้นจึงจำเป็นต้องเข้าไปอ่านข้อมูลใน Google Sheets ทุกครั้งเมื่อมีคำถามเข้ามา\nโดยให้ตอบออกมาเป็นข้อความธรรมดา ห้ามมี ** / () # เด็ดขาด\n\nหากถามแค่วันสอบอย่างเดียว ก็ให้ตอบวันสอบทั้งหมด ห้ามตอบว่าไม่มีข้อมูลหรือตอบไม่ได้\n\n\nหากอ่านข้อมูลเอกสารดูหมดแล้วพบว่าไม่มีคำตอบ หรือไม่สามารถตอบคำถามนั้นของผู้ให้ได้ ให้ให้ข้อมูลติดต่อนี้ไป\n\n1. หากเป็นคำถามเกี่ยวกับการสมัครเรียน \nให้ส่งข้อมูลการติดต่อ\n\"นายนพกร มูลศิลป์ : \nemail : nopphakorn.m@mbs.msu.ac.th  \nphone : 0-4375-4333 ต่อ 3432\"\n \n2. หากเป็นคำถามเกี่ยวกับวันต่างๆในมอ  \nให้ส่งข้อมูลการติดต่อ\n\"กองทะเบียนและประมวลผล มหาวิทยาลัยมหาสารคาม \nemail : reg@msu.ac.th\nphone : 043-719-888 , 043-719-889 , 08-0323-7706 , 06-3827-3667 (จ.-ศ. 08.30-16.30 น.) \nโทรสาร : 043-719-890 \nในวันและเวลาราชการ จันทร์ - ศุกร์ ช่วงเวลา 08.30-16.30 น.\"\n\nตอบเป็นภาษาไทยเท่านั้น\n\n\n\n",
+        "options": {
+          "systemMessage": "You are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -3648,
+        2256
+      ],
+      "id": "7da1a1da-a9be-4dac-b8cd-560f09179f95",
+      "name": "AI Agent18"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3648,
+        2464
+      ],
+      "id": "de94ab60-aba1-44f1-a9ed-515e7602d9c8",
+      "name": "Google Gemini Chat Model31",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3008,
+        2256
+      ],
+      "id": "4aed69e9-3c00-425e-8b3a-d680567c78b8",
+      "name": "Send a text message20",
+      "webhookId": "a9c87e3e-18e0-44b1-a340-5c3b780dbcec",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2240,
+        3712
+      ],
+      "id": "57cd716a-79f7-4066-87b1-29d30678970f",
+      "name": "Google Gemini Chat Model32",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n8",
+          "mode": "list",
+          "cachedResultName": "n8n8"
+        },
+        "options": {
+          "pineconeNamespace": "Modern Management"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -2560,
+        3728
+      ],
+      "id": "1e3f5680-144e-4e47-8056-38586b12948d",
+      "name": "Pinecone Vector Store13",
+      "credentials": {
+        "pineconeApi": {
+          "id": "Jdtf65ibzrsYj4Pt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2560,
+        3888
+      ],
+      "id": "bd77bca9-f87f-455d-bba1-5a78e4e6ecbd",
+      "name": "Embeddings Google Gemini13",
+      "notesInFlow": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1760,
+        3728
+      ],
+      "id": "4c75bb09-e4ae-44c6-bd7e-7ebef632d3ff",
+      "name": "Google Gemini Chat Model33",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n8",
+          "mode": "list",
+          "cachedResultName": "n8n8"
+        },
+        "options": {
+          "pineconeNamespace": "Economics"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -2080,
+        3744
+      ],
+      "id": "2ba69610-f11c-468e-86d2-e9766402a97c",
+      "name": "Pinecone Vector Store14",
+      "credentials": {
+        "pineconeApi": {
+          "id": "Jdtf65ibzrsYj4Pt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2080,
+        3904
+      ],
+      "id": "1f729c1c-c167-46c9-a9f3-dfa3b81054f7",
+      "name": "Embeddings Google Gemini14",
+      "notesInFlow": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        3696
+      ],
+      "id": "ac969564-90c8-425b-a704-5ac927b943b6",
+      "name": "Google Gemini Chat Model34",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n8",
+          "mode": "list",
+          "cachedResultName": "n8n8"
+        },
+        "options": {
+          "pineconeNamespace": "International Business"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -1600,
+        3712
+      ],
+      "id": "439d62cf-dd86-4b34-9cf4-d31a087ed54d",
+      "name": "Pinecone Vector Store15",
+      "credentials": {
+        "pineconeApi": {
+          "id": "Jdtf65ibzrsYj4Pt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1600,
+        3872
+      ],
+      "id": "f574ddcb-b657-4e5d-93df-0cb7ef835c6d",
+      "name": "Embeddings Google Gemini15",
+      "notesInFlow": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        3696
+      ],
+      "id": "dfb7b448-a57b-4493-bb88-3369ebcac9f8",
+      "name": "Google Gemini Chat Model35",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n8",
+          "mode": "list",
+          "cachedResultName": "n8n8"
+        },
+        "options": {
+          "pineconeNamespace": "Financial"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -1120,
+        3712
+      ],
+      "id": "a4398ce3-7421-4707-838b-040052264b9e",
+      "name": "Pinecone Vector Store16",
+      "credentials": {
+        "pineconeApi": {
+          "id": "Jdtf65ibzrsYj4Pt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        3872
+      ],
+      "id": "8cafd39c-e809-4154-8e07-a459d56eefb7",
+      "name": "Embeddings Google Gemini16",
+      "notesInFlow": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        3712
+      ],
+      "id": "04e58b9e-3c93-4813-8ef4-d9edfc8c23ee",
+      "name": "Google Gemini Chat Model36",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n8",
+          "mode": "list",
+          "cachedResultName": "n8n8"
+        },
+        "options": {
+          "pineconeNamespace": "Entrepreneurship"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -672,
+        3728
+      ],
+      "id": "66c89cca-f7ea-42e2-92bc-b43d3203284c",
+      "name": "Pinecone Vector Store17",
+      "credentials": {
+        "pineconeApi": {
+          "id": "Jdtf65ibzrsYj4Pt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        3888
+      ],
+      "id": "71b4f9e9-273f-4c01-b569-0c5e66120f99",
+      "name": "Embeddings Google Gemini17",
+      "notesInFlow": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "=call this tool to retrieve information to user"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -3872,
+        3552
+      ],
+      "id": "b84bf62e-3cc1-4830-b4b1-754487d894eb",
+      "name": "vector store1"
+    },
+    {
+      "parameters": {
+        "description": "=call this tool to retrieve information to user"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -3408,
+        3568
+      ],
+      "id": "45355d85-e183-4d95-be4f-702126309a78",
+      "name": "vector store3"
+    },
+    {
+      "parameters": {
+        "description": "=call this tool to retrieve information to user"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -2960,
+        3568
+      ],
+      "id": "a8500ce9-fa24-410a-8e02-64b4f41fc5e7",
+      "name": "vector store 4"
+    },
+    {
+      "parameters": {
+        "description": "=call this tool to retrieve information to user"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -2464,
+        3552
+      ],
+      "id": "177e3454-736e-4989-bbc2-46f32d2f1ea3",
+      "name": "vector store5"
+    },
+    {
+      "parameters": {
+        "description": "=call this tool to retrieve information to user"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -1984,
+        3568
+      ],
+      "id": "7190c2d0-17a2-416a-8ee8-6cba8c252848",
+      "name": "vector store6"
+    },
+    {
+      "parameters": {
+        "description": "=call this tool to retrieve information to user"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -1504,
+        3536
+      ],
+      "id": "19827087-c6cc-44fb-a1ce-f7d56932a678",
+      "name": "vector store7"
+    },
+    {
+      "parameters": {
+        "description": "=call this tool to retrieve information to user"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -1024,
+        3536
+      ],
+      "id": "00a6d329-6bd7-4118-8873-978304a23bc8",
+      "name": "vector store8"
+    },
+    {
+      "parameters": {
+        "description": "=call this tool to retrieve information to user"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        -576,
+        3536
+      ],
+      "id": "af2e0183-1974-4da2-8387-9d203b17a1b0",
+      "name": "vector store9"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e51a71f2-566d-4177-abd2-8888c21516a6",
+              "name": "message",
+              "value": "={{ $json.message }}",
+              "type": "object"
+            },
+            {
+              "id": "a03002c8-287f-4ba7-bb89-36e5b8030720",
+              "name": "message.from.id",
+              "value": "={{ $json.message.from.id }}",
+              "type": "number"
+            },
+            {
+              "id": "a30f5e32-99ec-487a-b2ca-424064b422ae",
+              "name": "message.document",
+              "value": "={{ $json.message.document }}",
+              "type": "object"
+            },
+            {
+              "id": "283a1b03-a84a-41ab-8433-d8a17de2b3b4",
+              "name": "message.document.mime_type",
+              "value": "={{ $json.message.document.mime_type }}",
+              "type": "string"
+            },
+            {
+              "id": "e42f7307-6fd9-4143-a1bc-dca9540e1e16",
+              "name": "message.message_id",
+              "value": "={{ $json.message.message_id }}",
+              "type": "number"
+            },
+            {
+              "id": "bbc338c5-29f2-489c-993d-1c70032d2d8f",
+              "name": "message.document.file_id",
+              "value": "={{ $json.message.document.file_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4768,
+        1504
+      ],
+      "id": "caea8b5b-69b8-4f76-83c3-9b3cc86a695b",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.from.id }}",
+        "text": "=สวัสดีค่ะ 👋  \nฉันคือผู้ช่วยอัจฉริยะด้านการศึกษาของคณะบัญชี มหาวิทยาลัยมหาสารคาม🎓 \nยินดีให้บริการค่ะ 💛  \n\nตอนนี้ระบบของเราสามารถช่วยคุณได้ใน 👇  \n\n1️⃣ ข้อมูลหลักสูตรของแต่ละสาขา  \n2️⃣ ข้อมูลการสมัครเรียน และคุณสมบัติผู้สมัคร  \n3️⃣ ปฏิทินการศึกษา 📅  \n4️⃣ ข้อมูลทุนการศึกษา และ กยศ. 💰  \n5️⃣ แนะนำตำแหน่งฝึกงาน 🤝  \n6️⃣ แนะนำตำแหน่งสหกิจศึกษา 🧑‍💼  \n7️⃣ แนะนำตำแหน่งงานหลังเรียนจบ 💼  \n8️⃣ ช่วยปรับปรุงเรซูเม่ หรือใบสมัครงาน 📄  \n9️⃣ สรุปเอกสาร/ข้อความให้เข้าใจง่าย 📚  \n🔟 สร้างแบบทดสอบหรือแบบฝึกหัด 🧠  \n \n\nคุณสามารถถามคำถามที่คุณอยากให้ฉันช่วยได้เลยค่ะ เช่น  \n- “อยากดูปฏิทินการศึกษา”  \n- “ช่วยดูเรซูเม่ให้หน่อย”  \n- “อยากรู้รายละเอียดสาขาการตลาด”  \n\nพร้อมให้ความช่วยเหลือตลอดเวลาเลยค่ะ 💬✨\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -4912,
+        1312
+      ],
+      "id": "69eb3bc9-468a-4d38-84ca-13bc53dfc795",
+      "name": "Send a text message4",
+      "webhookId": "8b52df85-42ba-486b-a65a-0a6a2a955cba",
+      "credentials": {
+        "telegramApi": {
+          "id": "8ZC6JrMclOSfZEqK",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5bb186d1-298d-4f0c-88e6-18005eb7e662",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "/start",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "e6c0da92-8734-4b1b-a31d-e45f4a900046",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "สวัสดี",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "b449d89d-bb43-4c77-940c-6db5238884c1",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "สอบถาม",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -5088,
+        1504
+      ],
+      "id": "47e3f534-f719-4e64-aa1f-f623099fc25f",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model20": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "vector store1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model21": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "vector store 3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store9": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "vector store1",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini9": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store10",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini10": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store9",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector store 3": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent18",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store10": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "vector store 3",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent11": {
+      "main": [
+        [
+          {
+            "node": "Send a text message8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model22": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent11",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File6": {
+      "main": [
+        [
+          {
+            "node": "AI Agent11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File7": {
+      "main": [
+        [
+          {
+            "node": "AI Agent12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent12": {
+      "main": [
+        [
+          {
+            "node": "Send a text message16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "getFile4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "getFile7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "getFile11",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "getFile10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "getFile8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "getFile9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File8": {
+      "main": [
+        [
+          {
+            "node": "AI Agent13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent13": {
+      "main": [
+        [
+          {
+            "node": "Send a text message19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model23": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent13",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File9": {
+      "main": [
+        [
+          {
+            "node": "AI Agent14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent14": {
+      "main": [
+        [
+          {
+            "node": "Send a text message13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model24": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent14",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract from File8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request6": {
+      "main": [
+        [
+          {
+            "node": "Extract from File6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request11": {
+      "main": [
+        [
+          {
+            "node": "Extract from File7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request12": {
+      "main": [
+        [
+          {
+            "node": "Extract from File9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getFile4": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getFile7": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getFile8": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getFile9": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File10": {
+      "main": [
+        [
+          {
+            "node": "AI Agent15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent15": {
+      "main": [
+        [
+          {
+            "node": "Send a text message17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model25": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent15",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File11": {
+      "main": [
+        [
+          {
+            "node": "AI Agent16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent16": {
+      "main": [
+        [
+          {
+            "node": "Send a text message15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model26": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent16",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request13": {
+      "main": [
+        [
+          {
+            "node": "Extract from File11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getFile10": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "AI Agent17",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent17": {
+      "main": [
+        [
+          {
+            "node": "Send a text message14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model27": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent17",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "docsFAQ1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent17",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "docsDetail1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent17",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sheetsLinks1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent17",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent18",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "resume1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent11",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model28": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent12",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dueDateTime": {
+      "main": [
+        [
+          {
+            "node": "Send a text message18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "dueDateTime",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron_Daily_DeadlineCheck": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request14": {
+      "main": [
+        [
+          {
+            "node": "Extract from File10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getFile11": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model29": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "vector store3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store11": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "vector store3",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini11": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store11",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model30": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "vector store 4",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store12": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "vector store 4",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini12": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store12",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "AI Agent18",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent18": {
+      "main": [
+        [
+          {
+            "node": "Send a text message20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model31": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent18",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model32": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "vector store5",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store13": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "vector store5",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini13": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store13",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model33": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "vector store6",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store14": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "vector store6",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini14": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store14",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model34": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "vector store7",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store15": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "vector store7",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini15": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store15",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model35": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "vector store8",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store16": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "vector store8",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini16": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store16",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model36": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "vector store9",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store17": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "vector store9",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini17": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store17",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model18": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector store3": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector store 4": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector store5": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector store6": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector store7": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector store8": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector store9": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "44f00250-068e-4a79-b259-495612c42a44",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0f1e6e2f48dab59702845a1871c1388eb853e68b0c74980bebc4639b9ca7dccf"
+  },
+  "id": "9Kv4Dtj1gS8XwkUl",
+  "tags": []
+}

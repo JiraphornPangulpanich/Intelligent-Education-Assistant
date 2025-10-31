@@ -1,0 +1,227 @@
+{
+  "name": "google drive",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n8",
+          "mode": "list",
+          "cachedResultName": "n8n8"
+        },
+        "options": {
+          "pineconeNamespace": "Entrepreneurship"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        608,
+        0
+      ],
+      "id": "8f5ed13e-5a74-4993-bf0f-b62b7a593ce7",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "Jdtf65ibzrsYj4Pt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        608,
+        176
+      ],
+      "id": "89b942d7-9fd9-48de-933c-bdbed63c3c7c",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hu506vOntMud3Xuh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "textSplittingMode": "custom",
+        "options": {
+          "splitPages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        176
+      ],
+      "id": "cfa23836-436c-4846-bb81-f927522a8429",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 50,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        720,
+        320
+      ],
+      "id": "adcac302-0b79-4c89-a851-a77601f2a977",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "limit": 100,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "18CZRg7T5-PBBLakNnD7e8DpJozfAK6XC",
+            "mode": "list",
+            "cachedResultName": "Entrepreneurship",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/18CZRg7T5-PBBLakNnD7e8DpJozfAK6XC"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        192,
+        0
+      ],
+      "id": "7acd6cee-20cf-46df-bbd7-a65abfc4c768",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "HaI95TCB4xd6pkH0",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        400,
+        0
+      ],
+      "id": "337680a6-f949-4fa8-b167-cccd3f197578",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "HaI95TCB4xd6pkH0",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "55b9341c-75c8-420d-be35-6ff3eae7aef7",
+      "name": "When clicking ‘Execute workflow’1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’1": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "eefd2081-ef3e-42b9-a7a8-5b8fb6886730",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0f1e6e2f48dab59702845a1871c1388eb853e68b0c74980bebc4639b9ca7dccf"
+  },
+  "id": "UDj4TGLMtC5kXsyA",
+  "tags": []
+}
